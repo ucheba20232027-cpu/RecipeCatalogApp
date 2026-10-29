@@ -2,7 +2,6 @@ package com.example.recipecataloglab.ui.screens
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -107,15 +106,11 @@ fun ListScreen(
         viewModel.loadRecipes(forceRefresh = true)
     }
 
-    // МОДУЛЬ 2. Дебаунс поиска
+    // МОДУЛЬ 2. Дебаунс поиска (логирование убрано для соответствия модели безопасности)
     LaunchedEffect(query) {
         if (query.isNotEmpty()) {
-            try {
-                delay(300)
-                viewModel.searchRemote(query)
-            } finally {
-                Log.d("DEBOUNCE", "cancel/finish: $query")
-            }
+            delay(300)
+            viewModel.searchRemote(query)
         }
     }
 
