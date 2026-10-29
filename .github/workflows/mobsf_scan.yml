@@ -6,21 +6,27 @@ on:
   workflow_dispatch:
 
 jobs:
-  mobsf-scan:
+  mobsfscan:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run MobSF Analysis
-        uses: fundacaocerti/mobsf-action@v1.7.2
-        env:
-          INPUT_FILE_NAME: app-debug.apk
-          SCAN_TYPE: apk
-          OUTPUT_FILE_NAME: mobsf-report
-
-      - name: Upload MobSF Report (PDF)
-        uses: actions/upload-artifact@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          name: MobSF-Report
-          path: mobsf-report.pdf
+          python-version: '3.10'
+
+      - name: Run mobsfscan
+        uses: MobSF/mobsfscan@main
+        with:
+          args: . --sarif --output results.sarif || true
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
