@@ -1,0 +1,26 @@
+name: MobSF Security Scan
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  mobsf-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run MobSF Analysis
+        uses: fundacaocerti/mobsf-action@v1.7.2
+        with:
+          INPUT_FILE_NAME: app-debug.apk
+          SCAN_TYPE: apk
+          OUTPUT_FILE_NAME: mobsf-report
+
+      - name: Upload MobSF Report (PDF)
+        uses: actions/upload-artifact@v4
+        with:
+          name: MobSF-Report
+          path: mobsf-report.pdf
