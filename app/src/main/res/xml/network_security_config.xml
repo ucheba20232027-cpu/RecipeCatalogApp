@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Запрещаем любые cleartext (HTTP) запросы во всем приложении -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <!-- Настройки для нашего API -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">jsonplaceholder.typicode.com</domain>
+
+        <!-- Пиннинг сертификата -->
+        <pin-set expiration="2027-01-01">
+            <!--
+              ВНИМАНИЕ: Это ПРИМЕР пина.
+              В реальном проекте здесь должен быть SHA-256 отпечаток публичного ключа (SPKI).
+              Для учебной работы этого достаточно, чтобы показать, что механизм настроен.
+            -->
+            <pin digest="SHA-256">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</pin>
+            <pin digest="SHA-256">BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=</pin>
+        </pin-set>
+    </domain-config>
+
+    <!-- Для отладки (debug) разрешаем доверять пользовательским сертификатам (для mitmproxy) -->
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </debug-overrides>
+</network-security-config>

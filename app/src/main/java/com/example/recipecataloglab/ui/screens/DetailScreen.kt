@@ -3,15 +3,20 @@ package com.example.recipecataloglab.ui.screens
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.recipecataloglab.data.RecipeRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -20,13 +25,10 @@ fun DetailScreen(
     recipeId: Int,
     onBack: () -> Unit
 ) {
-    // Кастомный Back handler: перехватываем системную кнопку
-    // и явно вызываем onBack (для чистоты и гибкости в будущем)
     BackHandler {
         onBack()
     }
 
-    // Валидация ID — если <= 0, сразу ошибка
     val recipe = if (recipeId > 0) RecipeRepository.findById(recipeId) else null
 
     if (recipe == null) {
@@ -34,8 +36,6 @@ fun DetailScreen(
         return
     }
 
-    // Локальное состояние счётчика порций — живёт только пока экран в композиции.
-    // При возврате на список экран уничтожается, state умирает автоматически.
     var portions by rememberSaveable(recipeId) { mutableStateOf(recipe.portions) }
 
     Scaffold(
@@ -58,12 +58,28 @@ fun DetailScreen(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(recipe.emoji, fontSize = 80.sp)
-            Spacer(Modifier.height(12.dp))
+            // --- ФОТО ИЛИ ЭМОДЗИ ---
+            if (recipe.imagePath != null) {
+                AsyncImage(
+                    model = recipe.imagePath,
+                    contentDescription = "Фото блюда",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                )
+            } else {
+                Text(recipe.emoji, fontSize = 80.sp)
+            }
+
+            Spacer(Modifier.height(16.dp))
+
             Text(
                 recipe.title,
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(4.dp))
             Text(
@@ -74,6 +90,7 @@ fun DetailScreen(
 
             Spacer(Modifier.height(20.dp))
 
+            // --- СТАТИСТИКА ---
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -87,6 +104,7 @@ fun DetailScreen(
 
             Spacer(Modifier.height(20.dp))
 
+            // --- СЧЕТЧИК ПОРЦИЙ ---
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(
                     modifier = Modifier
@@ -126,6 +144,7 @@ fun DetailScreen(
 
             Spacer(Modifier.height(20.dp))
 
+            // --- ИНГРЕДИЕНТЫ ---
             SectionTitle("Ингредиенты")
             Text(
                 recipe.ingredients,
@@ -135,6 +154,7 @@ fun DetailScreen(
 
             Spacer(Modifier.height(20.dp))
 
+            // --- ШАГИ ---
             SectionTitle("Приготовление")
             Text(
                 recipe.steps,
@@ -144,6 +164,7 @@ fun DetailScreen(
 
             Spacer(Modifier.height(24.dp))
 
+            // --- КНОПКИ ---
             Button(
                 onClick = { },
                 modifier = Modifier.fillMaxWidth()
@@ -203,7 +224,7 @@ private fun NotFoundScreen(recipeId: Int, onBack: () -> Unit) {
         Text(
             "ID рецепта: $recipeId. Возможно, он был удалён\nили ссылка неверна.",
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(24.dp))
         Button(onClick = onBack) {

@@ -84,7 +84,7 @@ fun NotesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Мои локальные заметки") },
+                title = { Text("Мои рецепты") },
                 navigationIcon = {
                     TextButton(onClick = onBack) { Text("← Назад") }
                 },
@@ -123,7 +123,7 @@ fun NotesScreen(
                 }
                 is NotesUiState.Success -> {
                     if (s.notes.isEmpty()) {
-                        Text("Заметок пока нет", Modifier.align(Alignment.Center), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("Рецептов пока нет", Modifier.align(Alignment.Center), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     } else {
                         LazyColumn(modifier = Modifier.fillMaxSize()) {
                             items(s.notes, key = { it.id }) { note ->

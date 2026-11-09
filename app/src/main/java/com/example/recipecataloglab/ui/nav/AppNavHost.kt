@@ -21,14 +21,12 @@ object Routes {
     const val SETTINGS = "settings"
     const val PROFILE = "profile"
     const val ADD_RECIPE = "add_recipe"
-
-    // ЛР №10
     const val POSTS = "posts"
     const val POST_DETAIL = "post_details/{postId}"
-
-    // ЛР №11
     const val NOTES = "notes"
     const val NOTE_EDIT = "note_edit/{noteId}"
+    const val AUDIT = "audit"
+    const val GUIDE = "guide"
 
     fun detail(id: Int) = "details/$id"
     fun postDetail(id: Int) = "post_details/$id"
@@ -40,7 +38,8 @@ fun AppNavHost(
     themeMode: ThemeMode,
     onThemeModeChange: (ThemeMode) -> Unit,
     forceDarkContent: Boolean,
-    onForceDarkChange: (Boolean) -> Unit
+    onForceDarkChange: (Boolean) -> Unit,
+    onLogout: () -> Unit // <-- НОВЫЙ ПАРАМЕТР
 ) {
     val navController = rememberNavController()
 
@@ -58,7 +57,8 @@ fun AppNavHost(
                 onGoToSettings = { navController.navigate(Routes.SETTINGS) },
                 onGoToProfile = { navController.navigate(Routes.PROFILE) },
                 onGoToPosts = { navController.navigate(Routes.POSTS) },
-                onGoToNotes = { navController.navigate(Routes.NOTES) } // НОВОЕ
+                onGoToNotes = { navController.navigate(Routes.NOTES) },
+                onGoToAudit = { navController.navigate(Routes.AUDIT) }
             )
         }
 
@@ -81,19 +81,22 @@ fun AppNavHost(
                 onThemeModeChange = onThemeModeChange,
                 forceDarkContent = forceDarkContent,
                 onForceDarkChange = onForceDarkChange,
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onGoToGuide = { navController.navigate(Routes.GUIDE) }
             )
         }
 
         composable(Routes.PROFILE) {
-            ProfileScreen(onBack = { navController.popBackStack() })
+            ProfileScreen(
+                onBack = { navController.popBackStack() },
+                onLogout = onLogout // <-- ПЕРЕДАЕМ ДАЛЬШЕ
+            )
         }
 
         composable(Routes.ADD_RECIPE) {
             AddRecipeScreen(onBack = { navController.popBackStack() })
         }
 
-        // Сетевые экраны (ЛР №10)
         composable(Routes.POSTS) {
             PostsScreen(
                 onBack = { navController.popBackStack() },
@@ -106,7 +109,6 @@ fun AppNavHost(
             PostDetailScreen(postId = postId, onBack = { navController.popBackStack() })
         }
 
-        // Экраны заметок (ЛР №11)
         composable(Routes.NOTES) {
             NotesScreen(
                 onBack = { navController.popBackStack() },
@@ -118,6 +120,14 @@ fun AppNavHost(
         composable(Routes.NOTE_EDIT, arguments = listOf(navArgument("noteId") { type = NavType.LongType })) { backStackEntry ->
             val noteId = backStackEntry.arguments?.getLong("noteId") ?: 0L
             NoteEditScreen(noteId = noteId, onBack = { navController.popBackStack() })
+        }
+
+        composable(Routes.AUDIT) {
+            AuditLogScreen(onBack = { navController.popBackStack() })
+        }
+
+        composable(Routes.GUIDE) {
+            UserGuideScreen(onBack = { navController.popBackStack() })
         }
     }
 }

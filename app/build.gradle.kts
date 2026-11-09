@@ -21,7 +21,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = true // Включаем R8 (обфускацию)
+            isShrinkResources = true // Удаляем неиспользуемые ресурсы
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -41,9 +42,13 @@ android {
 
 dependencies {
     // Явно фиксируем версии, совместимые с compileSdk 36 / AGP 9.0.0
+    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("androidx.biometric:biometric:1.1.0")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+    implementation("androidx.activity:activity-compose:1.9.2") // или более новая
+    implementation("androidx.fragment:fragment-ktx:1.8.5") // или более новая
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.4")

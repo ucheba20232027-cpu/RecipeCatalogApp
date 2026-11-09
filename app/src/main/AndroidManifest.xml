@@ -2,8 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Разрешение для сетевых запросов (ЛР 10) -->
+    <!-- Разрешение для сети (Retrofit) -->
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Разрешение для камеры -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Указываем, что камера не обязательна для установки -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
         android:allowBackup="false"
@@ -14,6 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RecipeCatalogLab"
+        android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="31">
 
         <activity
@@ -40,6 +47,17 @@
                     android:pathPrefix="/details" />
             </intent-filter>
         </activity>
+
+        <!-- FileProvider для работы с камерой (сохранение фото) -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
     </application>
 

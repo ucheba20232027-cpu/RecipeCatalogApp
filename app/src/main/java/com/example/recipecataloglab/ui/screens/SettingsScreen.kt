@@ -3,6 +3,9 @@ package com.example.recipecataloglab.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,7 +23,8 @@ fun SettingsScreen(
     onThemeModeChange: (ThemeMode) -> Unit,
     forceDarkContent: Boolean,
     onForceDarkChange: (Boolean) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onGoToGuide: () -> Unit // НОВЫЙ ПАРАМЕТР
 ) {
     Scaffold(
         topBar = {
@@ -48,9 +52,7 @@ fun SettingsScreen(
             }
 
             Spacer(Modifier.height(20.dp))
-
             HorizontalDivider()
-
             Spacer(Modifier.height(20.dp))
 
             Row(
@@ -69,6 +71,39 @@ fun SettingsScreen(
                     checked = forceDarkContent,
                     onCheckedChange = onForceDarkChange
                 )
+            }
+
+            Spacer(Modifier.height(20.dp))
+            HorizontalDivider()
+            Spacer(Modifier.height(20.dp))
+
+            // --- НОВЫЙ БЛОК: О ПРИЛОЖЕНИИ ---
+            Text("О приложении", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.height(8.dp))
+
+            Card(
+                onClick = onGoToGuide,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                )
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.Default.Info,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(Modifier.width(16.dp))
+                    Column {
+                        Text("Руководство пользователя", fontWeight = FontWeight.Medium)
+                        Text("Версия приложения 1.0.0", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
             }
         }
     }

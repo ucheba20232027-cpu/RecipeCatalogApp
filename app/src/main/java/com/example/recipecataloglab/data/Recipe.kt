@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Serializable
 
 @Immutable
-@Serializable // <-- Добавили для сохранения в JSON
+@Serializable
 data class Recipe(
     val id: Int,
     val emoji: String,
@@ -14,5 +14,6 @@ data class Recipe(
     val kcal: Int,
     val portions: Int,
     val ingredients: String,
-    val steps: String
+    val steps: String,
+    val imagePath: String? = null // <-- НОВОЕ ПОЛЕ
 )
